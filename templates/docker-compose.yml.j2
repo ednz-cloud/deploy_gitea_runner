@@ -9,18 +9,22 @@ services:
         target: /config.yaml
     environment:
       CONFIG_FILE: /config.yaml
-      GITEA_INSTANCE_URL: "https://git.ednz.fr"
-      GITEA_RUNNER_REGISTRATION_TOKEN: "cWetxKkQT0EpdEkh5K9E7Cq5a7t0RWv5BCUnmuxP"
-      GITEA_RUNNER_NAME: "hs1-actions-runner"
+      GITEA_INSTANCE_URL: "{{ deploy_gitea_runner_server_url }}"
+      GITEA_RUNNER_REGISTRATION_TOKEN: "{{ deploy_gitea_runner_server_token }}"
+      GITEA_RUNNER_NAME: "{{ deploy_gitea_runner_name }}"
     volumes:
       - data:/data
+{% if deploy_gitea_runner_config['cache']['enabled'] is defined and deploy_gitea_runner_config['cache']['enabled'] %}
       - cache:/cache
+{%- endif %}
       - /var/run/docker.sock:/var/run/docker.sock
+{% if deploy_gitea_runner_config['cache']['port'] is defined %}
     ports:
-      - target: 1234
-        published: 1234
+      - target: {{ deploy_gitea_runner_config['cache']['port'] }}
+        published: {{ deploy_gitea_runner_config['cache']['port'] }}
         protocol: tcp
         mode: ingress
+{%- endif %}
     networks:
       - internal
 
@@ -32,14 +36,16 @@ volumes:
   data:
     driver_opts:
       o: bind
-      device: /opt/gitea-actions/data
+      device: {{ deploy_gitea_runner_directory }}/data
       type: none
+{% if deploy_gitea_runner_config['cache']['enabled'] is defined and deploy_gitea_runner_config['cache']['enabled'] %}
   cache:
     driver_opts:
       o: bind
-      device: /opt/gitea-actions/cache
+      device: {{ deploy_gitea_runner_directory }}/cache
       type: none
+{%- endif %}
 
 configs:
   config_yaml:
-    file: /opt/gitea-actions/config.yaml
+    file: {{ deploy_gitea_runner_directory }}/config.yaml

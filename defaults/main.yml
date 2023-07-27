@@ -1,30 +1,23 @@
 ---
 # defaults file for deploy_adguard
-deploy_gitea_runner_directory: /opt/adguard
+deploy_gitea_runner_directory: /opt/gitea-actions
 deploy_gitea_runner_timezone: "Europe/Paris"
 deploy_gitea_runner_start_service: false
+deploy_gitea_runner_server_url: https://git.example.com
+deploy_gitea_runner_server_token: ""
+deploy_gitea_runner_name: gitea-runner
 deploy_gitea_runner_config:
   log:
     level: debug
   runner:
     file: .runner
     capacity: 1
-    envs:
-    env_file: .env
     timeout: 3h
     insecure: false
     fetch_timeout: 5s
     fetch_interval: 15s
-    labels:
-      - alpine-latest:docker://node:16-alpine
-      - alpine-3.18:docker://node:16-alpine3.18
-      - alpine-3.17:docker://node:16-alpine3.17
-      - alpine-3.16:docker://node:16-alpine3.16
-      - ubuntu-latest:docker://ghcr.io/catthehacker/ubuntu:act-latest
-      - ubuntu-22.04:docker://ghcr.io/catthehacker/ubuntu:act-22.04
-      - ubuntu-20.04:docker://ghcr.io/catthehacker/ubuntu:act-20.04
   cache:
-    enabled: false
+    enabled: true
   container:
     network: "gitea-actions_internal"
     privileged: true

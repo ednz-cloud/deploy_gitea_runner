@@ -1,0 +1,13 @@
+[Unit]
+Description=Act runner is a runner for Gitea based on Gitea fork of act.
+After=docker.service
+Requires=docker.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/bin/bash -c "docker-compose -f {{ deploy_gitea_runner_directory }}/docker-compose.yml up --detach"
+ExecStop=/bin/bash -c "docker-compose -f {{ deploy_gitea_runner_directory }}/docker-compose.yml down"
+
+[Install]
+WantedBy=multi-user.target

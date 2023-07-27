@@ -1,0 +1,27 @@
+---
+# task/prerequisites file for deploy_gitea_runner
+- name: "Create gitea_actions directory"
+  ansible.builtin.file:
+    path: "{{ deploy_gitea_runner_directory }}"
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: "Create gitea_actions/data directory"
+  ansible.builtin.file:
+    path: "{{ deploy_gitea_runner_directory }}/data"
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: "Create gitea_actions/cache directory"
+  ansible.builtin.file:
+    path: "{{ deploy_gitea_runner_directory }}/cache"
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+  when: deploy_gitea_runner_config['cache']['enabled'] is defined
+    and deploy_gitea_runner_config['cache']['enabled']
