@@ -1,0 +1,45 @@
+---
+version: '3.9'
+
+services:
+  runner:
+    image: gitea/act_runner:latest
+    configs:
+      - source: config_yaml
+        target: /config.yaml
+    environment:
+      CONFIG_FILE: /config.yaml
+      GITEA_INSTANCE_URL: "https://git.ednz.fr"
+      GITEA_RUNNER_REGISTRATION_TOKEN: "cWetxKkQT0EpdEkh5K9E7Cq5a7t0RWv5BCUnmuxP"
+      GITEA_RUNNER_NAME: "hs1-actions-runner"
+    volumes:
+      - data:/data
+      - cache:/cache
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - target: 1234
+        published: 1234
+        protocol: tcp
+        mode: ingress
+    networks:
+      - internal
+
+networks:
+  internal:
+    driver: bridge
+
+volumes:
+  data:
+    driver_opts:
+      o: bind
+      device: /opt/gitea-actions/data
+      type: none
+  cache:
+    driver_opts:
+      o: bind
+      device: /opt/gitea-actions/cache
+      type: none
+
+configs:
+  config_yaml:
+    file: /opt/gitea-actions/config.yaml
