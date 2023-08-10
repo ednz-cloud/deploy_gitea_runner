@@ -1,5 +1,7 @@
 ---
 # defaults file for deploy_adguard
+deploy_gitea_runner_version: latest
+deploy_gitea_runner_deploy_method: docker # deployment method, either host or docker.
 deploy_gitea_runner_directory: /opt/gitea-actions
 deploy_gitea_runner_timezone: "Europe/Paris"
 deploy_gitea_runner_start_service: false
@@ -8,16 +10,27 @@ deploy_gitea_runner_server_token: ""
 deploy_gitea_runner_name: gitea-runner
 deploy_gitea_runner_config:
   log:
-    level: debug
+    level: info
   runner:
     file: .runner
     capacity: 1
     timeout: 3h
     insecure: false
     fetch_timeout: 5s
-    fetch_interval: 15s
+    fetch_interval: 2s
+    labels: []
   cache:
     enabled: true
+    dir:
+    host:
+    port: 0
+    external_server:
   container:
-    network: "gitea-actions_internal"
-    privileged: true
+    network: ""
+    privileged: false
+    options:
+    workdir_parent:
+    valid_volumes: []
+    docker_host: ""
+  host:
+    workdir_parent:
