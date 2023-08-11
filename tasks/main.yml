@@ -5,3 +5,6 @@
 
 - name: "Import configure.yml"
   ansible.builtin.include_tasks: configure.yml
+
+- name: "Import install.yml"
+  ansible.builtin.include_tasks: "install_{{ deploy_gitea_runner_deploy_method }}.yml"

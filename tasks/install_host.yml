@@ -4,7 +4,7 @@
   vars:
     _gitea_actions_url_ext: "{% if deploy_gitea_runner_version == 'latest'%}releases{% else %}releases/tags{% endif %}"
   ansible.builtin.uri:
-    url: "{{ deploy_gitea_runner_gitea_api }}/{{ _docker_compose_url_ext }}/{{ install_docker_compose_version }}"
+    url: "{{ deploy_gitea_runner_gitea_api }}/{{ _gitea_actions_url_ext }}/{{ deploy_gitea_runner_version }}"
     return_content: true
   register: _gitea_runner_new_release
 
@@ -38,10 +38,10 @@
   when: deploy_gitea_runner_current_version is not defined
     or deploy_gitea_runner_wanted_version not in deploy_gitea_runner_current_version
   block:
-    - name: "Download and install gitea_runner version:{{ hashi_consul_envoy_version }}"
+    - name: "Download and install gitea_runner version:{{ deploy_gitea_runner_version }}"
       ansible.builtin.get_url:
-        url: "{{ deploy_gitea_runner_gitea_url }}/releases/download/v{{ deploy_gitea_runner_wanted_version }}/act_runner-{{ deploy_gitea_runner_wanted_version }}-linux-{{ deploy_gitea_runner_arch_map[ansible_distribution] }}"
-        dest: "{{ hashi_consul_envoy_path }}"
+        url: "{{ deploy_gitea_runner_gitea_url }}/releases/download/v{{ deploy_gitea_runner_wanted_version }}/act_runner-{{ deploy_gitea_runner_wanted_version }}-linux-{{ deploy_gitea_runner_arch_map[ansible_architecture] }}"
+        dest: "{{ deploy_gitea_runner_path }}"
         force: true
         owner: root
         group: root
