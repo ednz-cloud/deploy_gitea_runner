@@ -1,9 +1,9 @@
 ---
 # task/configure file for deploy_adguard
-- name: "Copy gitea-actions-runnner.service file"
+- name: "Copy gitea-runnner.service file"
   ansible.builtin.template:
-    src: "gitea-actions-runnner.service.j2"
-    dest: "/etc/systemd/system/gitea-actions-runnner.service"
+    src: "gitea-runnner.service.j2"
+    dest: "/etc/systemd/system/gitea-runnner.service"
     owner: root
     group: root
     mode: '0644'
@@ -20,8 +20,8 @@
         group: root
         mode: '0600'
       notify:
-        - systemctl-enable-gitea-actions-runnner
-        - systemctl-restart-gitea-actions-runnner
+        - systemctl-enable-gitea-runnner
+        - systemctl-restart-gitea-runnner
 
 - name: "Copy config.yaml"
   ansible.builtin.template:
@@ -32,4 +32,4 @@
     mode: '0600'
   when: deploy_gitea_runner_config != {}
   notify:
-    - systemctl-restart-gitea-actions-runnner
+    - systemctl-restart-gitea-runnner

@@ -1,2 +1,11 @@
 ---
 # vars file for deploy_gitea_runner
+deploy_gitea_runner_path: "/usr/local/bin/act-runner"
+deploy_gitea_runner_gitea_api: https://gitea.com/api/v1/repos/gitea/act_runner
+deploy_gitea_runner_gitea_url: https://gitea.com/gitea/act_runner
+deploy_gitea_runner_arch_map:
+  x86_64: 'amd64'
+  aarch64: 'arm64'
+  armv7l: 'arm-7'
+  armv5tel: 'arm-5'
+  armv6l: 'arm-6'

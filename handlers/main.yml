@@ -5,16 +5,16 @@
     daemon_reload: true
   listen: "systemctl-daemon-reload"
 
-- name: "Enable gitea-actions-runnner service"
+- name: "Enable gitea-runnner service"
   ansible.builtin.service:
-    name: gitea-actions-runnner
+    name: gitea-runnner
     enabled: true
-  listen: "systemctl-enable-gitea-actions-runnner"
+  listen: "systemctl-enable-gitea-runnner"
 
-- name: "Start gitea-actions-runnner service"
+- name: "Start gitea-runnner service"
   ansible.builtin.service:
-    name: gitea-actions-runnner
+    name: gitea-runnner
     state: restarted
-  listen: "systemctl-restart-gitea-actions-runnner"
+  listen: "systemctl-restart-gitea-runnner"
   throttle: 1
   when: deploy_gitea_runner_start_service

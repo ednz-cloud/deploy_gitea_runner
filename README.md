@@ -1,7 +1,7 @@
 deploy_gitea_runner
 =========
 
-A brief description of the role goes here.
+This role installs and configure a gitea act runner on **debian-based** distributions.
 
 Requirements
 ------------
@@ -20,7 +20,7 @@ A quick description of the variable, what it does, and how to use it.
 Dependencies
 ------------
 
-None.
+
 
 Example Playbook
 ----------------
