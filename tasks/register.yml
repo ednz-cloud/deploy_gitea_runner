@@ -1,0 +1,28 @@
+---
+# task/register file for deploy_gitea_runner
+- name: "Verify runner isnt already register"
+  ansible.builtin.stat:
+    path: "{{ deploy_gitea_runner_directory }}/.runner"
+  register: stat_gitea_runner_file
+
+- name: "Register gitea-runner"
+  when: not stat_gitea_runner_file.stat.exists and
+      not deploy_gitea_runner_deploy_method == 'docker' and
+      not deploy_gitea_runner_server_token == ''
+  block:
+    - name: "Register gitea-runner"
+      ansible.builtin.command: "{{ deploy_gitea_runner_path }} register --no-interactive --instance $GITEA_URL --token $GITEA_TOKEN --name $GITEA_RUNNER_NAME --config $CONFIG_FILE"
+      environment:
+        GITEA_URL: "{{ deploy_gitea_runner_server_url }}"
+        GITEA_TOKEN: "{{ deploy_gitea_runner_server_token }}"
+        GITEA_RUNNER_NAME: "{{ deploy_gitea_runner_name }}"
+        CONFIG_FILE: "{{ deploy_gitea_runner_directory }}/config.yaml"
+      changed_when: false
+      register: register_gitea_runner
+
+    - name: "Ensure registration is successful"
+      ansible.builtin.assert:
+        that:
+          - register_gitea_runner.rc == 0
+        success_msg: "Runner {{ deploy_gitea_runner_name }} registered correctly !"
+        fail_msg: "Runner {{ deploy_gitea_runner_name }} Did not register correctly: {{ register_gitea_runner.stderr }}"

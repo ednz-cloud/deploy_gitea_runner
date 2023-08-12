@@ -1,2 +1,14 @@
 ---
 # task/install_docker file for deploy_gitea_runner
+- name: "Configure docker-compose deployment"
+  block:
+    - name: "Copy docker-compose.yml template"
+      ansible.builtin.template:
+        src: "docker-compose.yml.j2"
+        dest: "{{ deploy_gitea_runner_directory }}/docker-compose.yml"
+        owner: root
+        group: root
+        mode: '0600'
+      notify:
+        - systemctl-enable-gitea-runner
+        - systemctl-restart-gitea-runner

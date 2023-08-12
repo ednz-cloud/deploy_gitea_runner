@@ -46,6 +46,8 @@
         owner: root
         group: root
         mode: '0755'
+      notify:
+        - systemctl-restart-gitea-runner
 
     - name: "Update version file"
       ansible.builtin.copy:

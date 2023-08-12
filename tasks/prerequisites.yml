@@ -15,10 +15,11 @@
     owner: root
     group: root
     mode: '0755'
+  when: deploy_gitea_runner_deploy_method == "docker"
 
 - name: "Create gitea_actions/cache directory"
   ansible.builtin.file:
-    path: "{{ deploy_gitea_runner_directory }}/cache"
+    path: "{{ deploy_gitea_runner_config['cache']['dir'] if deploy_gitea_runner_deploy_method == 'host' else deploy_gitea_runner_directory + '/data' }}"
     state: directory
     owner: root
     group: root

@@ -3,7 +3,7 @@ version: '3.9'
 
 services:
   runner:
-    image: gitea/act_runner:latest
+    image: gitea/act_runner:{{ deploy_gitea_runner_version }}
     configs:
       - source: config_yaml
         target: /config.yaml
