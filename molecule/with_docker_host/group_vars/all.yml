@@ -5,8 +5,8 @@ deploy_gitea_runner_directory: /opt/gitea-actions
 deploy_gitea_runner_timezone: "Europe/Paris"
 deploy_gitea_runner_register: true
 deploy_gitea_runner_start_service: true
-deploy_gitea_runner_server_url: https://git.example.com
-deploy_gitea_runner_server_token: ""
+deploy_gitea_runner_server_url: https://git.ednz.fr
+deploy_gitea_runner_server_token: "secret-token"
 deploy_gitea_runner_name: gitea-runner
 deploy_gitea_runner_config:
   log:
@@ -18,7 +18,7 @@ deploy_gitea_runner_config:
     insecure: false
     fetch_timeout: 5s
     fetch_interval: 2s
-    labels: ["ubuntu-latest"]
+    labels: ["ubuntu-latest:host"]
   cache:
     enabled: true
     dir: "{{ deploy_gitea_runner_directory }}/cache" # this HAS TO BE /cache if deploy_gitea_runner_deploy_method is docker
