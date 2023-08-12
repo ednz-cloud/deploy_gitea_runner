@@ -16,7 +16,7 @@ services:
       - data:/data
 {% if deploy_gitea_runner_config['cache']['enabled'] is defined and deploy_gitea_runner_config['cache']['enabled'] %}
       - cache:/cache
-{%- endif %}
+{% endif %}
       - /var/run/docker.sock:/var/run/docker.sock
 {% if deploy_gitea_runner_config['cache']['port'] is defined %}
     ports:
@@ -24,7 +24,7 @@ services:
         published: {{ deploy_gitea_runner_config['cache']['port'] }}
         protocol: tcp
         mode: ingress
-{%- endif %}
+{% endif %}
     networks:
       - internal
 

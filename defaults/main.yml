@@ -24,7 +24,7 @@ deploy_gitea_runner_config:
     enabled: true
     dir: "{{ deploy_gitea_runner_directory }}/cache" # this HAS TO BE /cache if deploy_gitea_runner_deploy_method is docker
     host: 127.0.0.1
-    port: 9898
+    port: 4974
     external_server:
   container:
     network: ""

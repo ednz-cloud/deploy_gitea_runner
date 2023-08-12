@@ -1,10 +1,10 @@
 ---
 deploy_gitea_runner_version: latest
-deploy_gitea_runner_deploy_method: host # deployment method, either host or docker.
+deploy_gitea_runner_deploy_method: docker # deployment method, either host or docker.
 deploy_gitea_runner_directory: /opt/gitea-actions
 deploy_gitea_runner_timezone: "Europe/Paris"
 deploy_gitea_runner_register: true
-deploy_gitea_runner_start_service: true
+deploy_gitea_runner_start_service: false
 deploy_gitea_runner_server_url: https://git.ednz.fr
 deploy_gitea_runner_server_token: "secret-token"
 deploy_gitea_runner_name: gitea-runner
@@ -12,16 +12,16 @@ deploy_gitea_runner_config:
   log:
     level: info
   runner:
-    file: "{{ deploy_gitea_runner_directory }}/.runner" # this HAS TO BE .runner if deploy_gitea_runner_deploy_method is docker
+    file: ".runner" # this HAS TO BE .runner if deploy_gitea_runner_deploy_method is docker
     capacity: 1
     timeout: 3h
     insecure: false
     fetch_timeout: 5s
     fetch_interval: 2s
-    labels: ["ubuntu-latest:host"]
+    labels: ["ubuntu-latest:docker://node:16-bullseye"]
   cache:
-    enabled: true
-    dir: "{{ deploy_gitea_runner_directory }}/cache" # this HAS TO BE /cache if deploy_gitea_runner_deploy_method is docker
+    enabled: false
+    dir: "/cache" # this HAS TO BE /cache if deploy_gitea_runner_deploy_method is docker
     host: 127.0.0.1
     port: 9898
     external_server:
@@ -31,6 +31,6 @@ deploy_gitea_runner_config:
     options: ""
     workdir_parent:
     valid_volumes: []
-    docker_host: "-"
+    docker_host: ""
   host:
     workdir_parent:
