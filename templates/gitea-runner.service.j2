@@ -1,29 +1,16 @@
-{% if deploy_gitea_runner_deploy_method == 'docker' %}
 [Unit]
-Description=Act runner is a runner for Gitea based on Gitea fork of act.
-After=docker.service
-Requires=docker.service
-
-[Service]
-Type=oneshot
-RemainAfterExit=yes
-ExecStart=/bin/bash -c "docker-compose -f {{ deploy_gitea_runner_directory }}/docker-compose.yml up --detach"
-ExecStop=/bin/bash -c "docker-compose -f {{ deploy_gitea_runner_directory }}/docker-compose.yml down"
-
-[Install]
+Description=Gitea Actions runner
+Documentation=https://gitea.com/gitea/act_runner
 WantedBy=multi-user.target
-{% elif deploy_gitea_runner_deploy_method == 'host' %}
-[Unit]
-Description=Act runner is a runner for Gitea based on Gitea fork of act.
-After=network.target
-Requires=network.target
 
 [Service]
-Type=simple
-EnvironmentFile=-{{ deploy_gitea_runner_directory }}/gitea-runner.env
+ExecStart={{ deploy_gitea_runner_path }} daemon --config /etc/act_runner/config.yaml
+ExecReload=/bin/kill -s HUP $MAINPID
 WorkingDirectory={{ deploy_gitea_runner_directory }}
-ExecStart={{ deploy_gitea_runner_path }} daemon
+TimeoutSec=0
+RestartSec=10
+Restart=always
+User=act_runner
 
 [Install]
 WantedBy=multi-user.target
-{% endif %}

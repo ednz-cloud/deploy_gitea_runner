@@ -16,9 +16,10 @@
         GITEA_URL: "{{ deploy_gitea_runner_server_url }}"
         GITEA_TOKEN: "{{ deploy_gitea_runner_server_token }}"
         GITEA_RUNNER_NAME: "{{ deploy_gitea_runner_name }}"
-        CONFIG_FILE: "{{ deploy_gitea_runner_directory }}/config.yaml"
+        CONFIG_FILE: "{{ deploy_gitea_host_config_directory }}/config.yaml"
       changed_when: false
       register: register_gitea_runner
+      become: true
 
     - name: "Ensure registration is successful"
       ansible.builtin.assert:

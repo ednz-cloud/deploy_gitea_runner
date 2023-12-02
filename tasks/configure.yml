@@ -1,23 +1,42 @@
 ---
 # task/configure file for deploy_adguard
-- name: "Copy gitea-runnner.service file"
-  ansible.builtin.template:
-    src: "gitea-runner.service.j2"
-    dest: "/etc/systemd/system/gitea-runner.service"
-    owner: root
-    group: root
-    mode: '0644'
-  notify:
-    - systemctl-daemon-reload
+- name: "configure host installation"
+  when: deploy_gitea_runner_deploy_method == 'host'
+  block:
+    - name: "Copy gitea-runnner.service file"
+      ansible.builtin.template:
+        src: "gitea-runner.service.j2"
+        dest: "/etc/systemd/system/gitea-runner.service"
+        owner: root
+        group: root
+        mode: '0644'
+      become: true
+      notify:
+        - systemctl-daemon-reload
 
-- name: "Copy config.yaml"
-  ansible.builtin.template:
-    src: "config.yaml.j2"
-    dest: "{{ deploy_gitea_runner_directory }}/config.yaml"
-    owner: root
-    group: root
-    mode: '0600'
-  when: deploy_gitea_runner_config != {}
-  notify:
-    - systemctl-enable-gitea-runner
-    - systemctl-restart-gitea-runner
+    - name: "Copy config.yaml"
+      ansible.builtin.template:
+        src: "config.yaml.j2"
+        dest: "{{ deploy_gitea_host_config_directory }}/config.yaml"
+        owner: act_runner
+        group: act_runner
+        mode: '0600'
+      when: deploy_gitea_runner_config != {}
+      become: true
+      notify:
+        - systemctl-enable-gitea-runner
+        - systemctl-restart-gitea-runner
+
+- name: "configure docker installation"
+  when: deploy_gitea_runner_deploy_method == 'docker'
+  block:
+    - name: "Copy config.yaml"
+      ansible.builtin.template:
+        src: "config.yaml.j2"
+        dest: "{{ deploy_gitea_runner_directory }}/config.yaml"
+        owner: root
+        group: root
+        mode: '0600'
+      when: deploy_gitea_runner_config != {}
+      become: true
+

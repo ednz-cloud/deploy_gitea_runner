@@ -1,8 +1,11 @@
 ---
 # vars file for deploy_gitea_runner
+deploy_gitea_host_config_directory: "/etc/act_runner"
 deploy_gitea_runner_path: "/usr/local/bin/act-runner"
 deploy_gitea_runner_gitea_api: https://gitea.com/api/v1/repos/gitea/act_runner
 deploy_gitea_runner_gitea_url: https://gitea.com/gitea/act_runner
+deploy_gitea_runner_host_user: act_runner
+deploy_gitea_runner_docker_group: docker
 deploy_gitea_runner_arch_map:
   x86_64: 'amd64'
   aarch64: 'arm64'

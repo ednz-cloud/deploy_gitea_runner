@@ -1,28 +1,69 @@
 ---
 # task/prerequisites file for deploy_gitea_runner
-- name: "Create gitea_actions directory"
-  ansible.builtin.file:
-    path: "{{ deploy_gitea_runner_directory }}"
-    state: directory
-    owner: root
-    group: root
-    mode: '0755'
+- name: "Prerequisites for host installation"
+  when: deploy_gitea_runner_deploy_method == 'host'
+  block:
+    - name: "Create group act_runner"
+      ansible.builtin.group:
+        name: "{{ deploy_gitea_runner_host_user }}"
+        state: present
+      become: true
 
-- name: "Create gitea_actions/data directory"
-  ansible.builtin.file:
-    path: "{{ deploy_gitea_runner_directory }}/data"
-    state: directory
-    owner: root
-    group: root
-    mode: '0755'
-  when: deploy_gitea_runner_deploy_method == "docker"
+    - name: "Create user act_runner"
+      ansible.builtin.user:
+        name: "{{ deploy_gitea_runner_host_user }}"
+        group: "{{ deploy_gitea_runner_host_user }}"
+        home: "{{ deploy_gitea_runner_directory }}"
+        shell: /bin/false
+        state: present
+      become: true
 
-- name: "Create gitea_actions/cache directory"
-  ansible.builtin.file:
-    path: "{{ deploy_gitea_runner_config['cache']['dir'] if deploy_gitea_runner_deploy_method == 'host' else deploy_gitea_runner_directory + '/data' }}"
-    state: directory
-    owner: root
-    group: root
-    mode: '0755'
-  when: deploy_gitea_runner_config['cache']['enabled'] is defined
-    and deploy_gitea_runner_config['cache']['enabled']
+    - name: "Add act_runner user to docker group"
+      ansible.builtin.user:
+        name: "{{ deploy_gitea_runner_host_user }}"
+        groups: "{{ deploy_gitea_runner_docker_group }}"
+        append: true
+      become: true
+
+    - name: "Create runner configuration directory"
+      ansible.builtin.file:
+        path: "{{ deploy_gitea_host_config_directory }}"
+        state: directory
+        owner: act_runner
+        group: act_runner
+        mode: '0755'
+      become: true
+
+
+- name: "Prerequisites for docker installation"
+  when: deploy_gitea_runner_deploy_method == 'docker'
+  block:
+    - name: "Create gitea_actions directory"
+      ansible.builtin.file:
+        path: "{{ deploy_gitea_runner_directory }}"
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+      become: true
+
+    - name: "Create gitea_actions/data directory"
+      ansible.builtin.file:
+        path: "{{ deploy_gitea_runner_directory }}/data"
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+      when: deploy_gitea_runner_deploy_method == "docker"
+      become: true
+
+    - name: "Create gitea_actions/cache directory"
+      ansible.builtin.file:
+        path: "{{ deploy_gitea_runner_directory }}/cache"
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+      become: true
+      when: deploy_gitea_runner_config['cache']['enabled'] is defined
+        and deploy_gitea_runner_config['cache']['enabled']
