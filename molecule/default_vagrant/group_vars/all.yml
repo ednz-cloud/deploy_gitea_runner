@@ -19,14 +19,7 @@ deploy_gitea_runner_config:
     insecure: false
     fetch_timeout: 5s
     fetch_interval: 15s
-    labels:
-      - alpine-latest:docker://node:16-alpine
-      - alpine-3.18:docker://node:16-alpine3.18
-      - alpine-3.17:docker://node:16-alpine3.17
-      - alpine-3.16:docker://node:16-alpine3.16
-      - ubuntu-latest:docker://ghcr.io/catthehacker/ubuntu:act-latest
-      - ubuntu-22.04:docker://ghcr.io/catthehacker/ubuntu:act-22.04
-      - ubuntu-20.04:docker://ghcr.io/catthehacker/ubuntu:act-20.04
+    labels: []
   cache:
     enabled: true
     dir: "/cache" # this HAS TO BE /cache if deploy_gitea_runner_deploy_method is docker
