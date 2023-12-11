@@ -1,17 +1,10 @@
 ---
 - name: Prepare
   hosts: all
+  become: true
   tasks:
     - name: "Include ednxzu.install_docker"
       ansible.builtin.include_role:
         name: ednxzu.install_docker
       vars:
-        install_docker_edition: ce
-        install_docker_start_service: true
-        install_docker_compose: false
-        install_docker_compose_version: latest
         install_docker_python_packages: true
-        install_docker_python_packages_version: latest
-        install_docker_users: []
-        install_docker_daemon_options:
-          live-restore: true

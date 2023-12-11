@@ -1,36 +1,27 @@
 ---
 # task/install_docker file for deploy_gitea_runner
-- name: "Include mhutter.docker-systemd-service"
+- name: "Include ednxzu.docker_systemd_service"
   ansible.builtin.include_role:
-    name: mhutter.docker-systemd-service
+    name: ednxzu.docker_systemd_service
     apply:
       become: true
   vars:
-    container_image: "gitea/act_runner:{{ deploy_gitea_runner_version }}"
-    container_name: "{{ deploy_gitea_runner_name }}"
-    container_docker_pull: true
-    container_docker_pull_force_source: true
-    container_host_network: false
-    container_network: "bridge"
-    container_ports: "{{ [deploy_gitea_runner_config.cache.port ~ ':' ~ deploy_gitea_runner_config.cache.port] if deploy_gitea_runner_config.cache.enabled else [] }}"
-    container_volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock"
-      - "{{ deploy_gitea_runner_directory }}/config.yaml:/config.yaml"
-      - "{{ deploy_gitea_runner_directory }}/data:/data"
-      - "{{ deploy_gitea_runner_directory }}/cache:/cache"
-    container_env:
+    docker_systemd_service_container_name: "{{ deploy_gitea_runner_name }}"
+    docker_systemd_service_image: "gitea/act_runner:{{ deploy_gitea_runner_version }}"
+    docker_systemd_service_container_env:
       TZ: "{{ deploy_gitea_runner_timezone }}"
       CONFIG_FILE: /config.yaml
       GITEA_INSTANCE_URL: "{{ deploy_gitea_runner_server_url }}"
       GITEA_RUNNER_REGISTRATION_TOKEN: "{{ deploy_gitea_runner_server_token }}"
       GITEA_RUNNER_NAME: "{{ deploy_gitea_runner_name }}"
-    service_name: "{{ deploy_gitea_runner_name }}_container"
-    service_systemd_options: []
-    service_systemd_unit_options:
-      After: docker.service
-      PartOf: docker.service
-      Requires: docker.service
-    service_enabled: true
-    service_masked: false
-    service_state: "{{ 'started' if deploy_gitea_runner_start_service else 'stopped'}}"
-    service_restart: false
+    docker_systemd_service_flags:
+      - network: bridge
+      - volume:
+          - "/var/run/docker.sock:/var/run/docker.sock"
+          - "{{ deploy_gitea_runner_directory }}/config.yaml:/config.yaml"
+          - "{{ deploy_gitea_runner_directory }}/data:/data"
+          - "{{ deploy_gitea_runner_directory }}/cache:/cache"
+      - publish: "{{ [deploy_gitea_runner_config.cache.port ~ ':' ~ deploy_gitea_runner_config.cache.port] if deploy_gitea_runner_config.cache.enabled else [] }}"
+    docker_systemd_service_name: "{{ docker_systemd_service_container_name }}_container"
+    docker_systemd_service_state: "{{ 'started' if deploy_gitea_runner_start_service else 'stopped'}}"
+    docker_systemd_service_restart: "{{ true if deploy_gitea_runner_start_service else false}}"

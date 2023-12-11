@@ -1,6 +1,6 @@
 ---
 # task/configure file for deploy_adguard
-- name: "configure host installation"
+- name: "Configure host installation"
   when: deploy_gitea_runner_deploy_method == 'host'
   block:
     - name: "Copy gitea-runnner.service file"
@@ -27,7 +27,7 @@
         - systemctl-enable-gitea-runner
         - systemctl-restart-gitea-runner
 
-- name: "configure docker installation"
+- name: "Configure docker installation"
   when: deploy_gitea_runner_deploy_method == 'docker'
   block:
     - name: "Copy config.yaml"
@@ -39,4 +39,3 @@
         mode: '0600'
       when: deploy_gitea_runner_config != {}
       become: true
-
