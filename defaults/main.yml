@@ -32,6 +32,6 @@ deploy_gitea_runner_config:
     options: ""
     workdir_parent:
     valid_volumes: []
-    docker_host: "-"
+    docker_host: ""
   host:
     workdir_parent: ""

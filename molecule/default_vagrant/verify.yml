@@ -4,3 +4,137 @@
   gather_facts: true
   become: true
   tasks:
+    - name: "Test: act_runner user and group"
+      block:
+        - name: "Getent user act_runner"
+          ansible.builtin.getent:
+            database: passwd
+            key: act_runner
+          register: act_runner_user
+
+        - name: "Getent group act_runner"
+          ansible.builtin.getent:
+            database: group
+            key: act_runner
+          register: act_runner_group
+
+        - name: "Verify act_runner user and group"
+          ansible.builtin.assert:
+            that:
+              - not act_runner_user.failed
+              - not act_runner_group.failed
+              - "'act_runner' in act_runner_user.ansible_facts.getent_passwd.keys()"
+              - "'/opt/gitea-actions' in act_runner_user.ansible_facts.getent_passwd['act_runner']"
+              - "'/bin/false' in act_runner_user.ansible_facts.getent_passwd['act_runner']"
+              - "'act_runner' in act_runner_group.ansible_facts.getent_group.keys()"
+
+    - name: "Test: directory /etc/act_runner"
+      block:
+        - name: "Stat directory /etc/act_runner"
+          ansible.builtin.stat:
+            path: "/etc/act_runner"
+          register: stat_etc_act_runner
+
+        - name: "Stat file /etc/act_runner/config.yaml"
+          ansible.builtin.stat:
+            path: "/etc/act_runner/config.yaml"
+          register: stat_etc_act_runner_config_yaml
+
+        - name: "Slurp file /etc/act_runner/config.yaml"
+          ansible.builtin.slurp:
+            src: "/etc/act_runner/config.yaml"
+          register: slurp_etc_act_runner_config_yaml
+
+        - name: "Verify directory /etc/act_runner"
+          ansible.builtin.assert:
+            that:
+              - stat_etc_act_runner.stat.exists
+              - stat_etc_act_runner.stat.isdir
+              - stat_etc_act_runner.stat.pw_name == 'act_runner'
+              - stat_etc_act_runner.stat.gr_name == 'act_runner'
+              - stat_etc_act_runner.stat.mode == '0755'
+              - stat_etc_act_runner_config_yaml.stat.exists
+              - stat_etc_act_runner_config_yaml.stat.isreg
+              - stat_etc_act_runner_config_yaml.stat.pw_name == 'act_runner'
+              - stat_etc_act_runner_config_yaml.stat.gr_name == 'act_runner'
+              - stat_etc_act_runner_config_yaml.stat.mode == '0600'
+              - slurp_etc_act_runner_config_yaml.content != ''
+
+    - name: "Test: directory /opt/gitea-actions"
+      block:
+        - name: "Stat directory /opt/gitea-actions"
+          ansible.builtin.stat:
+            path: "/opt/gitea-actions"
+          register: stat_opt_gitea_actions
+
+        - name: "Stat file /opt/gitea-actions/.version"
+          ansible.builtin.stat:
+            path: "/opt/gitea-actions/.version"
+          register: stat_opt_gitea_actions_version
+
+        - name: "Slurp file /opt/gitea-actions/.version"
+          ansible.builtin.slurp:
+            src: "/opt/gitea-actions/.version"
+          register: slurp_opt_gitea_actions_version
+
+        - name: "Verify directory /opt/gitea-actions"
+          ansible.builtin.assert:
+            that:
+              - stat_opt_gitea_actions.stat.exists
+              - stat_opt_gitea_actions.stat.isdir
+              - stat_opt_gitea_actions.stat.pw_name == 'act_runner'
+              - stat_opt_gitea_actions.stat.gr_name == 'act_runner'
+              - stat_opt_gitea_actions.stat.mode == '0750'
+              - stat_opt_gitea_actions_version.stat.exists
+              - stat_opt_gitea_actions_version.stat.isreg
+              - stat_opt_gitea_actions_version.stat.pw_name == 'root'
+              - stat_opt_gitea_actions_version.stat.gr_name == 'root'
+              - stat_opt_gitea_actions_version.stat.mode == '0600'
+              - slurp_opt_gitea_actions_version.content != ''
+
+    - name: "Test: service gitea-runner"
+      block:
+        - name: "Get service gitea-runner"
+          ansible.builtin.service_facts:
+
+        - name: "Stat file /etc/systemd/system/gitea-runner.service"
+          ansible.builtin.stat:
+            path: "/etc/systemd/system/gitea-runner.service"
+          register: stat_etc_systemd_system_gitea_runner_service
+
+        - name: "Slurp file /etc/systemd/system/gitea-runner.service"
+          ansible.builtin.slurp:
+            src: "/etc/systemd/system/gitea-runner.service"
+          register: slurp_etc_systemd_system_gitea_runner_service
+
+        - name: "Verify service gitea-runner"
+          vars:
+            gitea_runner_expected_service_file: |
+              [Unit]
+              Description=Gitea Actions runner
+              Documentation=https://gitea.com/gitea/act_runner
+              WantedBy=multi-user.target
+
+              [Service]
+              ExecStart=/usr/local/bin/act-runner daemon --config /etc/act_runner/config.yaml
+              ExecReload=/bin/kill -s HUP $MAINPID
+              WorkingDirectory=/opt/gitea-actions
+              TimeoutSec=0
+              RestartSec=10
+              Restart=always
+              User=act_runner
+
+              [Install]
+              WantedBy=multi-user.target
+          ansible.builtin.assert:
+            that:
+              - stat_etc_systemd_system_gitea_runner_service.stat.exists
+              - stat_etc_systemd_system_gitea_runner_service.stat.isreg
+              - stat_etc_systemd_system_gitea_runner_service.stat.pw_name == 'root'
+              - stat_etc_systemd_system_gitea_runner_service.stat.gr_name == 'root'
+              - stat_etc_systemd_system_gitea_runner_service.stat.mode == '0644'
+              - (slurp_etc_systemd_system_gitea_runner_service.content|b64decode) == gitea_runner_expected_service_file
+              - ansible_facts.services['gitea-runner.service'] is defined
+              - ansible_facts.services['gitea-runner.service']['source'] == 'systemd'
+              - ansible_facts.services['gitea-runner.service']['state'] == 'stopped'
+              - ansible_facts.services['gitea-runner.service']['status'] == 'enabled'
