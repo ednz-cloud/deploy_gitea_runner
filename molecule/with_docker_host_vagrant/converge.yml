@@ -1,0 +1,8 @@
+---
+- name: Converge
+  hosts: all
+  become: true
+  tasks:
+    - name: "Include ednxzu.deploy_gitea_runner"
+      ansible.builtin.include_role:
+        name: "ednxzu.deploy_gitea_runner"
