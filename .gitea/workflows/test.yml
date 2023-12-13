@@ -35,7 +35,7 @@ jobs:
     strategy:
       matrix:
         test_os: [debian11, debian12, ubuntu2004, ubuntu2204]
-        scenario: [default, with_custom_flags]
+        scenario: [default, with_docker_host]
     env:
       ANSIBLE_HOST_KEY_CHECKING: 'false'
       ANSIBLE_FORCE_COLOR: 'true'
