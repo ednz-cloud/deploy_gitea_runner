@@ -3,8 +3,6 @@
 - name: "Include ednxzu.docker_systemd_service"
   ansible.builtin.include_role:
     name: ednxzu.docker_systemd_service
-    apply:
-      become: true
   vars:
     docker_systemd_service_container_name: "{{ deploy_gitea_runner_name }}"
     docker_systemd_service_image: "gitea/act_runner:{{ deploy_gitea_runner_version }}"

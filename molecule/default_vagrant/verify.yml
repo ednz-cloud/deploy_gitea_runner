@@ -84,7 +84,7 @@
               - stat_opt_gitea_actions.stat.isdir
               - stat_opt_gitea_actions.stat.pw_name == 'act_runner'
               - stat_opt_gitea_actions.stat.gr_name == 'act_runner'
-              - stat_opt_gitea_actions.stat.mode == '0750'
+              - stat_opt_gitea_actions.stat.mode == '0755'
               - stat_opt_gitea_actions_version.stat.exists
               - stat_opt_gitea_actions_version.stat.isreg
               - stat_opt_gitea_actions_version.stat.pw_name == 'root'
