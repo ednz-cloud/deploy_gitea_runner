@@ -1,7 +1,7 @@
 ---
 # meta file for deploy_gitea_runner
 galaxy_info:
-  namespace: 'ednxzu'
+  namespace: 'ednz_cloud'
   role_name: 'deploy_gitea_runner'
   author: 'Bertrand Lanson'
   description: 'Deploy gitea-actions CICD runners on Debian based distributions'

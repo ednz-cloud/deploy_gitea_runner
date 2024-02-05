@@ -6,7 +6,7 @@ This role installs and configure a gitea act runner on **debian-based** distribu
 Requirements
 ------------
 
-If `deploy_gitea_runner_deploy_method` is set to `docker`, this role assumes you have `docker`, `docker-compose` installed on the target hosts. The role will not install these components, but you can install them using the [install_docker](https://github.com/ednxzu/install_docker) role.
+If `deploy_gitea_runner_deploy_method` is set to `docker`, this role assumes you have `docker`, `docker-compose` installed on the target hosts. The role will not install these components, but you can install them using the [install_docker](https://github.com/ednz_cloud/install_docker) role.
 
 Role Variables
 --------------
@@ -99,7 +99,7 @@ Example Playbook
 # calling the role inside a playbook with either the default or group_vars/host_vars
 - hosts: servers
   roles:
-    - ednxzu.deploy_gitea_runner
+    - ednz_cloud.deploy_gitea_runner
 ```
 
 License

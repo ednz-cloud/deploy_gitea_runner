@@ -3,6 +3,6 @@
   hosts: all
   become: true
   tasks:
-    - name: "Include ednxzu.deploy_gitea_runner"
+    - name: "Include ednz_cloud.deploy_gitea_runner"
       ansible.builtin.include_role:
-        name: "ednxzu.deploy_gitea_runner"
+        name: "ednz_cloud.deploy_gitea_runner"
